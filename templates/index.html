@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>הורדת סרטונים מיוטיוב</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <img src="https://via.placeholder.com/100"1>הורדת סרטונים מיוטיוב</h1>
+        <form method="POST">
+            <label for="url">הכנס קישור לסרטון:</label>
+            <input type="text" id="url" name="url" required>
+
+            <label for="format">בחר פורמט:</label>
+            <select id="format" name="format">
+                <option value="video">וידאו</option>
+                <option value="audio">אודיו</option>
+            </select>
+
+            <label><input type="checkbox" name="remember"> זכור אותי</label>
+            <a href="#">שכחת סיסמה?</a>
+
+            <button type="submit">הורד</button>
+        </form>
+    </div>
+</body>
+</html>

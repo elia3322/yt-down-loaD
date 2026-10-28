@@ -1,23 +1,28 @@
-# yt-downloader Flask App
+# yt-downloader
 
-This is a simple Flask web application that allows you to download YouTube videos or audio using yt-dlp.
+אפליקציית Flask להורדת וידאו או אודיו מיוטיוב באמצעות yt-dlp.
 
-## 🚀 Deploy to Render
+## הרצה מקומית
 
-1. Create a free account at [https://render.com](https://render.com)
-2. Create a new Web Service
-3. Connect your GitHub repository containing this project
-4. Set the following settings:
-   - **Build Command:** `pip install -r requirements.txt`
-   - **Start Command:** `python app.py`
-   - **Environment:** Python 3
-5. Make sure your folder structure includes:
-   - `app.py`
-   - `templates/index.html`
-   - `static/style.css`
-   - `downloads/` (empty folder for storing downloaded files)
-   - `requirements.txt`
-   - `Procfile`
-6. Optionally include `cookies.txt` if you use authenticated downloads.
+```bash
+pip install -r requirements.txt
+python app.py        # http://localhost:5000
+```
 
-After deployment, your app will be accessible via a public URL provided by Render.
+## פריסה (Render)
+
+- **Build Command:** `pip install -r requirements.txt`
+- **Start Command:** `gunicorn app:app --bind 0.0.0.0:$PORT --workers 2 --threads 4 --timeout 300`
+- **Health check:** `/healthz`
+
+## עוגיות (אופציונלי)
+
+אם יוטיוב חוסם הורדות, אפשר לספק קובץ עוגיות בפורמט Netscape.
+הנתיב נקבע במשתנה הסביבה `COOKIES_FILE` (ברירת מחדל: `cookies.txt` ליד `app.py`).
+**אין לשמור את הקובץ ב-git** – הוא מכיל פרטי התחברות. הוא נמצא ב-`.gitignore`.
+
+## התנהגות
+
+- מקבל רק קישורי YouTube.
+- כל הורדה נשמרת בתיקייה זמנית משלה ונמחקת אחרי 15 דקות.
+- ל-FFmpeg אין תלות: אין מיזוג או המרה, הפורמט נבחר כפי שיוטיוב מספק.

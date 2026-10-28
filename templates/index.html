@@ -2,27 +2,61 @@
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>הורדת סרטונים מיוטיוב</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <div class="container">
-        <img src="https://via.placeholder.com/100"1>הורדת סרטונים מיוטיוב</h1>
-        <form method="POST">
-            <label for="url">הכנס קישור לסרטון:</label>
-            <input type="text" id="url" name="url" required>
+    <main class="card">
+        <h1>הורדת סרטונים מיוטיוב</h1>
+        <form id="form">
+            <label for="url">קישור לסרטון</label>
+            <input type="url" id="url" name="url" placeholder="https://www.youtube.com/watch?v=..." required>
 
-            <label for="format">בחר פורמט:</label>
+            <label for="format">פורמט</label>
             <select id="format" name="format">
-                <option value="video">וידאו</option>
-                <option value="audio">אודיו</option>
+                <option value="video">וידאו (MP4)</option>
+                <option value="audio">אודיו בלבד</option>
             </select>
 
-            <label><input type="checkbox" name="remember"> זכור אותי</label>
-            <a href="#">שכחת סיסמה?</a>
-
-            <button type="submit">הורד</button>
+            <button type="submit" id="submit">הורד</button>
         </form>
-    </div>
+        <p id="status" role="status" aria-live="polite"></p>
+    </main>
+    <script>
+        const form = document.getElementById("form");
+        const statusEl = document.getElementById("status");
+        const button = document.getElementById("submit");
+
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            button.disabled = true;
+            statusEl.className = "";
+            statusEl.textContent = "מוריד... זה יכול לקחת כמה רגעים";
+            try {
+                const res = await fetch("/api/download", {
+                    method: "POST",
+                    headers: {"Content-Type": "application/json"},
+                    body: JSON.stringify({
+                        url: form.url.value,
+                        format: form.format.value,
+                    }),
+                });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error || "שגיאה");
+                statusEl.textContent = "";
+                const link = document.createElement("a");
+                link.href = data.url;
+                link.textContent = "הורד: " + data.filename;
+                statusEl.append(link);
+                link.click();
+            } catch (err) {
+                statusEl.className = "error";
+                statusEl.textContent = err.message;
+            } finally {
+                button.disabled = false;
+            }
+        });
+    </script>
 </body>
 </html>

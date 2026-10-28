@@ -11,6 +11,8 @@ python app.py        # http://localhost:5000
 
 ## פריסה (Render)
 
+הריפו כולל `render.yaml`: ב-Render בחרו New → Blueprint וחברו את הריפו. או הגדירו ידנית:
+
 - **Build Command:** `pip install -r requirements.txt`
 - **Start Command:** `gunicorn app:app --bind 0.0.0.0:$PORT --workers 2 --threads 4 --timeout 300`
 - **Health check:** `/healthz`

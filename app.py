@@ -21,6 +21,11 @@ FILE_TTL_SECONDS = 15 * 60
 ALLOWED_HOSTS = {
     "youtube.com", "www.youtube.com", "m.youtube.com", "music.youtube.com", "youtu.be",
 }
+BOT_BLOCK_MESSAGE = (
+    "יוטיוב חסמה את הבקשה בטענה שהשרת הוא בוט. "
+    "יש לעדכן את קובץ העוגיות (cookies.txt) של השרת בעוגיות טריות, "
+    "ואם זה לא עוזר, ייתכן שכתובת ה-IP של השרת חסומה."
+)
 JOB_ID_RE = re.compile(r"^[0-9a-f]{32}$")
 
 os.makedirs(DOWNLOAD_ROOT, exist_ok=True)
@@ -98,6 +103,8 @@ def api_download():
     except DownloadError as e:
         shutil.rmtree(job_dir, ignore_errors=True)
         msg = re.sub(r"\x1b\[[0-9;]*m", "", str(e)).replace("ERROR: ", "")
+        if "confirm you" in msg and "bot" in msg:
+            return jsonify(error=BOT_BLOCK_MESSAGE), 403
         return jsonify(error=f"ההורדה נכשלה: {msg}"), 422
     except Exception:
         shutil.rmtree(job_dir, ignore_errors=True)
